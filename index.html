@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <link rel="stylesheet" href="style.css">
+    <title>Diamond Messenger</title>
+</head>
+<body>
+    <div id="auth" class="auth-card">
+        <h2>Diamond Messenger</h2>
+        <input type="text" id="name" placeholder="Имя пользователя">
+        <input type="password" id="pass" placeholder="Пароль">
+        <button onclick="auth('register')">Создать аккаунт</button>
+        <p style="font-size: 12px; color: gray;">или</p>
+        <button onclick="auth('login')" style="background:none; color:#2481cc;">Войти</button>
+    </div>
+
+    <div id="app" class="messenger">
+        <div class="header">Diamond Messenger | <span id="userName"></span></div>
+        <div style="padding: 20px;">Добро пожаловать в Diamond Inc. Сервер работает!</div>
+    </div>
+
+    <script>
+        async function auth(type) {
+            const name = document.getElementById('name').value;
+            const password = document.getElementById('pass').value;
+
+            const res = await fetch(`/api/${type}`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ name, password })
+            });
+
+            const data = await res.json();
+            if (data.success) {
+                document.getElementById('auth').style.display = 'none';
+                document.getElementById('app').style.display = 'block';
+                document.getElementById('userName').innerText = data.user.Name + (data.user.Verify ? ' ✓' : '');
+            } else {
+                alert(data.error);
+            }
+        }
+    </script>
+</body>
+</html>
+
